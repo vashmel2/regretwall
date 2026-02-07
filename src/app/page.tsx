@@ -49,9 +49,12 @@ export default async function Home() {
           <span className="block text-xs sm:text-sm tracking-widest uppercase text-muted mb-6">
             RegretWall
           </span>
-          <h1 className="text-xl sm:text-2xl font-light leading-snug text-foreground/80">
-            {prompt}
+          <h1 className="sr-only">
+            Read anonymous regrets shared by real people
           </h1>
+          <p className="text-xl sm:text-2xl font-light leading-snug text-foreground/80">
+            {prompt}
+          </p>
         </header>
 
         {/* Feed */}
@@ -63,7 +66,7 @@ export default async function Home() {
         {/* SEO context — informational, non-intrusive */}
         <section className="py-10 border-t border-border/30">
           <h2 className="text-xs tracking-widest uppercase text-muted/40 mb-3">
-            About
+            Real thoughts about life, love, and missed chances
           </h2>
           <p className="text-sm leading-relaxed text-muted/50">
             RegretWall is a public collection of anonymous regrets shared by
