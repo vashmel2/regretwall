@@ -46,12 +46,12 @@ export default async function Home() {
       <div className="max-w-xl mx-auto px-4 sm:px-6">
         {/* Header */}
         <header className="pt-12 sm:pt-20 pb-8 sm:pb-12">
-          <h1 className="text-xs sm:text-sm tracking-widest uppercase text-muted mb-6">
+          <span className="block text-xs sm:text-sm tracking-widest uppercase text-muted mb-6">
             RegretWall
-          </h1>
-          <p className="text-xl sm:text-2xl font-light leading-snug text-foreground/80">
+          </span>
+          <h1 className="text-xl sm:text-2xl font-light leading-snug text-foreground/80">
             {prompt}
-          </p>
+          </h1>
         </header>
 
         {/* Feed */}
@@ -59,6 +59,19 @@ export default async function Home() {
           initialRegrets={initialRegrets}
           initialCursor={initialCursor}
         />
+
+        {/* SEO context — informational, non-intrusive */}
+        <section className="py-10 border-t border-border/30">
+          <h2 className="text-xs tracking-widest uppercase text-muted/40 mb-3">
+            About
+          </h2>
+          <p className="text-sm leading-relaxed text-muted/50">
+            RegretWall is a public collection of anonymous regrets shared by
+            real people. Read honest thoughts about love, career, money,
+            family, health, and life decisions — the things people wish they
+            had done differently. No accounts, no judgement.
+          </p>
+        </section>
 
         {/* Footer */}
         <footer className="py-12 text-center">

@@ -100,11 +100,11 @@ export default function RegretFeed({
       </div>
 
       {/* The feed */}
-      <div>
+      <section aria-label="Anonymous regrets">
         {regrets.map((regret, i) => (
           <RegretCard key={regret.id} regret={regret} animationIndex={i} />
         ))}
-      </div>
+      </section>
 
       {/* Infinite scroll trigger */}
       <div ref={observerRef} className="h-1" />

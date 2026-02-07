@@ -55,17 +55,21 @@ export default function RegretCard({
       : "";
 
   return (
-    <div
+    <article
       className={`animate-fade-up ${delayClass} group relative border-b border-border py-6 px-1`}
       onMouseEnter={() => setShowFlag(true)}
       onMouseLeave={() => setShowFlag(false)}
     >
-      <p className="text-base sm:text-lg leading-relaxed text-foreground/90 font-light">
-        &ldquo;{regret.text}&rdquo;
-      </p>
+      <blockquote className="m-0 p-0 border-0">
+        <p className="text-base sm:text-lg leading-relaxed text-foreground/90 font-light">
+          {regret.text}
+        </p>
+      </blockquote>
 
-      <div className="mt-3 flex items-center gap-3 text-xs text-muted">
-        <span>{timeAgo(regret.created_at)}</span>
+      <footer className="mt-3 flex items-center gap-3 text-xs text-muted">
+        <time dateTime={regret.created_at}>
+          {timeAgo(regret.created_at)}
+        </time>
         {regret.topic && (
           <>
             <span className="text-border">·</span>
@@ -89,7 +93,7 @@ export default function RegretCard({
         >
           {flagged ? "flagged" : "flag"}
         </button>
-      </div>
-    </div>
+      </footer>
+    </article>
   );
 }

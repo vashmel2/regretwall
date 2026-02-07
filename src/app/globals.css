@@ -37,6 +37,13 @@ body {
   font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
 }
 
+/* Reset blockquote browser defaults to preserve visual design */
+blockquote {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
 /* Subtle fade-in for regret cards */
 @keyframes fadeUp {
   from {
