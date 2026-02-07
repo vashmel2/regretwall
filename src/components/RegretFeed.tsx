@@ -100,7 +100,7 @@ export default function RegretFeed({
       </div>
 
       {/* The feed */}
-      <section aria-label="Anonymous regrets">
+      <section id="recent-regrets" aria-label="Recent anonymous regrets">
         {regrets.map((regret, i) => (
           <RegretCard key={regret.id} regret={regret} animationIndex={i} />
         ))}

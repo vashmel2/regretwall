@@ -57,6 +57,14 @@ export default async function Home() {
           </p>
         </header>
 
+        {/* Anchor link to feed */}
+        <a
+          href="#recent-regrets"
+          className="text-sm text-muted hover:underline"
+        >
+          Read recent regrets
+        </a>
+
         {/* Feed */}
         <RegretFeed
           initialRegrets={initialRegrets}
