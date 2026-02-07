@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Why People Regret Things They Didn't Do | RegretWall",
   description:
-    "Explore why regret over inaction hurts more than failure. Learn why people regret the things they didn't do — and why sharing those regrets anonymously helps.",
+    "Explore why regret over inaction hurts more than failure. Learn why people regret the things they didn't do, and why sharing those regrets anonymously helps.",
   openGraph: {
     title: "Why People Regret Things They Didn't Do",
     description:
@@ -36,10 +36,11 @@ export default function WhyPeopleRegretThings() {
 
         <div className="space-y-6 text-base leading-relaxed text-foreground/85 font-light">
           <p>
-            Most people assume their biggest regrets would come from mistakes
-            — the wrong job, the bad relationship, the investment that tanked.
-            But research consistently shows the opposite. Over time, it&apos;s
-            not what we did that haunts us. It&apos;s what we didn&apos;t do.
+            Most people assume their biggest regrets would come from
+            mistakes. The wrong job, the bad relationship, the investment
+            that tanked. But research consistently shows the opposite. Over
+            time, it&apos;s not what we did that haunts us. It&apos;s what we
+            didn&apos;t do.
           </p>
 
           <p>
@@ -64,8 +65,8 @@ export default function WhyPeopleRegretThings() {
             Psychologists call this the{" "}
             <strong className="font-normal text-foreground">
               Zeigarnik effect
-            </strong>{" "}
-            — the tendency for unfinished tasks to occupy our minds more than
+            </strong>
+            : the tendency for unfinished tasks to occupy our minds more than
             completed ones. An unanswered question loops endlessly. A closed
             door, even if it led somewhere bad, eventually fades.
           </p>
@@ -93,25 +94,27 @@ export default function WhyPeopleRegretThings() {
 
           <ul className="list-none space-y-3 pl-0">
             <li className="border-l-2 border-border pl-4">
-              <strong className="font-normal text-foreground">Love</strong> —
+              <strong className="font-normal text-foreground">Love.</strong>{" "}
               The person they didn&apos;t tell. The relationship they stayed in
               too long, or left too soon. The words they swallowed.
             </li>
             <li className="border-l-2 border-border pl-4">
-              <strong className="font-normal text-foreground">Career</strong>{" "}
-              — The dream job they didn&apos;t apply for. The safe path they
+              <strong className="font-normal text-foreground">Career.</strong>{" "}
+              The dream job they didn&apos;t apply for. The safe path they
               chose over the meaningful one. The years spent building someone
               else&apos;s vision.
             </li>
             <li className="border-l-2 border-border pl-4">
-              <strong className="font-normal text-foreground">Fear</strong> —
+              <strong className="font-normal text-foreground">Fear.</strong>{" "}
               The trip they didn&apos;t take. The conversation they avoided.
               The life they didn&apos;t live because they were afraid of what
               people would think.
             </li>
             <li className="border-l-2 border-border pl-4">
-              <strong className="font-normal text-foreground">Silence</strong>{" "}
-              — The apology they never gave. The &ldquo;I love you&rdquo; they
+              <strong className="font-normal text-foreground">
+                Silence.
+              </strong>{" "}
+              The apology they never gave. The &ldquo;I love you&rdquo; they
               assumed was obvious. The call they kept meaning to make.
             </li>
           </ul>
@@ -119,7 +122,7 @@ export default function WhyPeopleRegretThings() {
           <p>
             These aren&apos;t dramatic, life-altering catastrophes. They&apos;re
             quiet. They&apos;re ordinary. And that&apos;s exactly why they
-            stick — because anyone can see themselves in them.
+            stick. Anyone can see themselves in them.
           </p>
 
           <h2 className="text-lg sm:text-xl font-light text-foreground pt-4">
@@ -128,14 +131,14 @@ export default function WhyPeopleRegretThings() {
 
           <p>
             Regret is one of the most isolating emotions. It feels deeply
-            personal — like you&apos;re the only person who missed that
+            personal, like you&apos;re the only person who missed that
             obvious chance, who stayed quiet when they should have spoken, who
             let something good slip away.
           </p>
 
           <p>
-            But the moment you see someone else say the same thing — someone
-            you&apos;ll never meet, with no name and no face — something
+            But the moment you see someone else say the same thing, someone
+            you&apos;ll never meet, with no name and no face, something
             shifts. You realize you&apos;re not uniquely broken. You&apos;re
             just human.
           </p>
@@ -149,7 +152,7 @@ export default function WhyPeopleRegretThings() {
 
           <p>
             It&apos;s not therapy. It&apos;s not advice. It&apos;s witnessing.
-            And sometimes, being witnessed — even anonymously — is enough to
+            And sometimes, being witnessed, even anonymously, is enough to
             loosen the grip of something you&apos;ve been carrying alone.
           </p>
 
@@ -172,7 +175,7 @@ export default function WhyPeopleRegretThings() {
           </p>
 
           <p>
-            None of these are failures. They&apos;re absences — small ones
+            None of these are failures. They&apos;re absences. Small ones
             that grew heavy with time.
           </p>
 
@@ -184,7 +187,7 @@ export default function WhyPeopleRegretThings() {
             RegretWall exists because these thoughts need somewhere to go. Not
             a journal that no one reads. Not a social media post optimized for
             likes. Just a quiet wall where people can leave the things
-            they&apos;ve been carrying — and where others can scroll through
+            they&apos;ve been carrying, and where others can scroll through
             them and feel a little less alone.
           </p>
 
@@ -196,8 +199,8 @@ export default function WhyPeopleRegretThings() {
           <p className="pt-4">
             <Link href="/#recent-regrets" className="text-accent hover:underline">
               See what people wish they did differently
-            </Link>{" "}
-            — or share your own, anonymously.
+            </Link>
+            , or share your own, anonymously.
           </p>
         </div>
 
