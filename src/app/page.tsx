@@ -69,6 +69,7 @@ export default async function Home() {
         <RegretFeed
           initialRegrets={initialRegrets}
           initialCursor={initialCursor}
+          dbAvailable={!!supabase}
         />
 
         {/* SEO context — informational, non-intrusive */}
@@ -86,7 +87,7 @@ export default async function Home() {
 
         {/* Footer */}
         <footer className="py-12 text-center">
-          <p className="text-xs text-muted/30">
+          <p className="text-xs text-muted/50">
             Anonymous. No accounts. No judgement.
           </p>
         </footer>

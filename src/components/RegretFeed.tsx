@@ -15,13 +15,16 @@ const SCROLL_THRESHOLD_FOR_FORM = 600; // px scrolled before showing form
 export default function RegretFeed({
   initialRegrets,
   initialCursor,
+  dbAvailable = true,
 }: {
   initialRegrets: Regret[];
   initialCursor: string | null;
+  dbAvailable?: boolean;
 }) {
   const [regrets, setRegrets] = useState<Regret[]>(initialRegrets);
   const [cursor, setCursor] = useState<string | null>(initialCursor);
   const [isLoading, setIsLoading] = useState(false);
+  const [loadError, setLoadError] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const observerRef = useRef<HTMLDivElement | null>(null);
   const loadingRef = useRef(false);
@@ -48,6 +51,7 @@ export default function RegretFeed({
     if (!cursor || loadingRef.current) return;
     loadingRef.current = true;
     setIsLoading(true);
+    setLoadError(false);
 
     try {
       const res = await fetch(`/api/regrets?cursor=${encodeURIComponent(cursor)}`);
@@ -57,7 +61,7 @@ export default function RegretFeed({
       setRegrets((prev) => [...prev, ...data.regrets]);
       setCursor(data.nextCursor);
     } catch {
-      // Silent fail — user can scroll again to retry
+      setLoadError(true);
     } finally {
       setIsLoading(false);
       loadingRef.current = false;
@@ -116,8 +120,23 @@ export default function RegretFeed({
         </div>
       )}
 
+      {/* Load error with retry */}
+      {loadError && !isLoading && (
+        <div className="py-8 text-center">
+          <p className="text-sm text-muted/60 mb-2">
+            Couldn&apos;t load more regrets.
+          </p>
+          <button
+            onClick={() => loadMore()}
+            className="text-sm text-accent hover:underline cursor-pointer"
+          >
+            Try again
+          </button>
+        </div>
+      )}
+
       {/* End of feed */}
-      {!cursor && regrets.length > 0 && (
+      {!cursor && !loadError && regrets.length > 0 && (
         <div className="py-12 text-center">
           <p className="text-sm text-muted/50">You&apos;ve reached the end.</p>
         </div>
@@ -126,7 +145,11 @@ export default function RegretFeed({
       {/* Empty state */}
       {regrets.length === 0 && !isLoading && (
         <div className="py-20 text-center">
-          <p className="text-muted">No regrets yet. Be the first.</p>
+          <p className="text-muted">
+            {dbAvailable
+              ? "No regrets yet. Be the first."
+              : "Unable to load regrets right now. Check back soon."}
+          </p>
         </div>
       )}
     </div>

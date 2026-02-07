@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -11,12 +12,52 @@ export const metadata: Metadata = {
       "The psychology of regret: why missed chances haunt us more than mistakes, and why anonymous sharing helps people process what they wish they had done differently.",
     type: "article",
     siteName: "RegretWall",
+    images: [
+      {
+        url: "/images/why-people-regret-things-they-didnt-do.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Why people regret things they didn't do",
+      },
+    ],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Why People Regret Things They Didn't Do",
+    description:
+      "The psychology of regret: why missed chances haunt us more than mistakes, and why anonymous sharing helps people process what they wish they had done differently.",
+    images: ["/images/why-people-regret-things-they-didnt-do.jpg"],
+  },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: "Why People Regret Things They Didn't Do",
+  description:
+    "Explore why regret over inaction hurts more than failure. Learn why people regret the things they didn't do, and why sharing those regrets anonymously helps.",
+  image: "https://regretwall.com/images/why-people-regret-things-they-didnt-do.jpg",
+  author: {
+    "@type": "Organization",
+    name: "RegretWall",
+    url: "https://regretwall.com",
+  },
+  publisher: {
+    "@type": "Organization",
+    name: "RegretWall",
+    url: "https://regretwall.com",
+  },
+  datePublished: "2025-06-01",
+  mainEntityOfPage: "https://regretwall.com/why-people-regret-things",
 };
 
 export default function WhyPeopleRegretThings() {
   return (
     <main className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <article className="max-w-xl mx-auto px-4 sm:px-6 py-12 sm:py-20">
         <header className="mb-10">
           <Link
@@ -33,6 +74,15 @@ export default function WhyPeopleRegretThings() {
             if.&rdquo;
           </p>
         </header>
+
+        <Image
+          src="/images/why-people-regret-things-they-didnt-do.jpg"
+          alt="Why people regret things they didn't do"
+          width={1200}
+          height={630}
+          className="w-full rounded-sm mb-10"
+          priority
+        />
 
         <div className="space-y-6 text-base leading-relaxed text-foreground/85 font-light">
           <p>

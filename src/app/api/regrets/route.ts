@@ -1,23 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { rateLimit } from "@/lib/rate-limit";
+import { moderateContent } from "@/lib/moderation";
 
 const PAGE_SIZE = 20;
 
 const VALID_TOPICS = ["love", "career", "money", "family", "health", "fear"];
-const VALID_AGE_RANGES = ["<18", "18-25", "26-35", "36-50", "50+"];
-
-// Patterns that indicate spam
-const SPAM_PATTERNS = [
-  /https?:\/\//i,
-  /www\./i,
-  /\.com\b/i,
-  /\.net\b/i,
-  /\.org\b/i,
-  /buy now/i,
-  /click here/i,
-  /free money/i,
-  /subscribe/i,
-];
+const VALID_AGE_RANGES = ["18-25", "26-35", "36-50", "50+"];
 
 export async function GET(request: NextRequest) {
   if (!supabase) {
@@ -56,9 +45,25 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  // Rate limiting via IP (basic — production should use middleware or edge)
   const forwarded = request.headers.get("x-forwarded-for");
   const ip = forwarded?.split(",")[0]?.trim() ?? "unknown";
+
+  // Rate limit: 3 submissions per IP per 15 minutes
+  const { allowed, retryAfterMs } = rateLimit(`post:${ip}`, {
+    maxRequests: 3,
+    windowMs: 15 * 60 * 1000,
+  });
+
+  if (!allowed) {
+    const retryAfterSec = Math.ceil(retryAfterMs / 1000);
+    return NextResponse.json(
+      { error: "Too many submissions. Please try again later." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(retryAfterSec) },
+      }
+    );
+  }
 
   try {
     const body = await request.json();
@@ -85,12 +90,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check spam patterns
-    if (SPAM_PATTERNS.some((pattern) => pattern.test(trimmed))) {
-      return NextResponse.json(
-        { error: "Submission flagged as spam" },
-        { status: 400 }
-      );
+    // Content moderation (spam, slurs, abuse patterns)
+    const rejection = moderateContent(trimmed);
+    if (rejection) {
+      return NextResponse.json({ error: rejection }, { status: 400 });
     }
 
     // Validate optional fields

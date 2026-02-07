@@ -56,7 +56,7 @@ export default function RegretCard({
 
   return (
     <article
-      className={`animate-fade-up ${delayClass} group relative border-b border-border py-6 px-1`}
+      className={`animate-fade-up ${delayClass} group relative bg-card/30 rounded-lg p-5 my-3`}
       onMouseEnter={() => setShowFlag(true)}
       onMouseLeave={() => setShowFlag(false)}
     >
@@ -85,9 +85,11 @@ export default function RegretCard({
 
         <button
           onClick={handleFlag}
-          className={`ml-auto text-muted/50 hover:text-muted transition-opacity duration-200 ${
-            showFlag || flagged ? "opacity-100" : "opacity-0"
-          } ${flagged ? "cursor-default" : "cursor-pointer"}`}
+          className={`ml-auto transition-all duration-200 ${
+            flagged
+              ? "text-muted/30 line-through cursor-default"
+              : "text-muted/50 hover:text-muted cursor-pointer"
+          } ${showFlag || flagged ? "opacity-100" : "opacity-0"}`}
           aria-label="Flag this regret"
           disabled={flagged}
         >

@@ -15,7 +15,6 @@ const TOPICS = [
 
 const AGE_RANGES = [
   { value: "", label: "Age (optional)" },
-  { value: "<18", label: "Under 18" },
   { value: "18-25", label: "18–25" },
   { value: "26-35", label: "26–35" },
   { value: "36-50", label: "36–50" },
