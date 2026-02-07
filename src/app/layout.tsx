@@ -9,24 +9,25 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "RegretWall — Things left unsaid",
+  title:
+    "Anonymous Regrets — What People Wish They Did Differently | RegretWall",
   description:
-    "An anonymous wall of regrets. Read what others wish they had done differently, or share your own.",
+    "Read anonymous regrets shared by real people. Discover what others wish they had done differently about life, love, career, and choices.",
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://regretwall.com"
   ),
   openGraph: {
-    title: "RegretWall — Things left unsaid",
+    title: "Anonymous Regrets — What People Wish They Did Differently",
     description:
-      "An anonymous wall of regrets. Read what others wish they had done differently.",
+      "A public wall of anonymous regrets. Read real thoughts about life, love, career, and the choices people wish they had made.",
     type: "website",
     siteName: "RegretWall",
   },
   twitter: {
     card: "summary_large_image",
-    title: "RegretWall — Things left unsaid",
+    title: "Anonymous Regrets — What People Wish They Did Differently",
     description:
-      "An anonymous wall of regrets. Read what others wish they had done differently.",
+      "Read anonymous regrets shared by real people. A quiet place to reflect on life's missed chances.",
   },
 };
 
