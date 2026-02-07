@@ -36,8 +36,8 @@ export type Database = {
     Views: Record<string, never>;
     Functions: {
       flag_regret: {
-        Args: { regret_id: string };
-        Returns: undefined;
+        Args: { regret_id: string; flagger_ip_hash: string };
+        Returns: boolean;
       };
     };
     Enums: Record<string, never>;
