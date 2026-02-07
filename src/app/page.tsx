@@ -46,13 +46,13 @@ export default async function Home() {
       <div className="max-w-xl mx-auto px-4 sm:px-6">
         {/* Header */}
         <header className="pt-12 sm:pt-20 pb-8 sm:pb-12">
-          <span className="block text-xs sm:text-sm tracking-widest uppercase text-muted mb-6">
+          <span className="block text-xs sm:text-sm tracking-widest uppercase text-muted mb-4">
             RegretWall
           </span>
-          <h1 className="sr-only">
+          <h1 className="text-xl sm:text-2xl font-light leading-snug text-foreground">
             Read anonymous regrets shared by real people
           </h1>
-          <p className="text-xl sm:text-2xl font-light leading-snug text-foreground/80">
+          <p className="mt-2 text-base sm:text-lg text-foreground/80">
             {prompt}
           </p>
         </header>
