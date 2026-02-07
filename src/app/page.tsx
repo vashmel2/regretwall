@@ -20,14 +20,20 @@ function getDailyPrompt(): string {
 export const revalidate = 60; // ISR: revalidate every 60 seconds
 
 export default async function Home() {
-  const { data: regrets } = await supabase
-    .from("regrets")
-    .select("id, text, topic, age_range, created_at")
-    .eq("is_hidden", false)
-    .order("created_at", { ascending: false })
-    .limit(20);
+  let initialRegrets: Awaited<ReturnType<typeof fetchRegrets>> = [];
 
-  const initialRegrets = regrets ?? [];
+  async function fetchRegrets() {
+    if (!supabase) return [];
+    const { data } = await supabase
+      .from("regrets")
+      .select("id, text, topic, age_range, created_at")
+      .eq("is_hidden", false)
+      .order("created_at", { ascending: false })
+      .limit(20);
+    return data ?? [];
+  }
+
+  initialRegrets = await fetchRegrets();
   const initialCursor =
     initialRegrets.length === 20
       ? initialRegrets[initialRegrets.length - 1].created_at

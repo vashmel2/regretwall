@@ -7,6 +7,10 @@ export async function POST(
 ) {
   const { id } = await params;
 
+  if (!supabase) {
+    return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+  }
+
   const { error } = await supabase.rpc("flag_regret", { regret_id: id });
 
   if (error) {

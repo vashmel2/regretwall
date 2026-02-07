@@ -20,6 +20,10 @@ const SPAM_PATTERNS = [
 ];
 
 export async function GET(request: NextRequest) {
+  if (!supabase) {
+    return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+  }
+
   const { searchParams } = new URL(request.url);
   const cursor = searchParams.get("cursor");
 
@@ -131,6 +135,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Insert into Supabase
+    if (!supabase) {
+      return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+    }
+
     const { data, error } = await supabase
       .from("regrets")
       .insert({
