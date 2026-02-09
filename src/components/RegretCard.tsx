@@ -37,7 +37,8 @@ export default function RegretCard({
   animationIndex?: number;
 }) {
   const [flagged, setFlagged] = useState(false);
-  const [showFlag, setShowFlag] = useState(false);
+  const [showActions, setShowActions] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const handleFlag = async () => {
     if (flagged) return;
@@ -49,6 +50,36 @@ export default function RegretCard({
     }
   };
 
+  const handleShare = async () => {
+    const url = `${window.location.origin}/regret/${regret.id}`;
+    const preview =
+      regret.text.length > 100
+        ? regret.text.slice(0, 100) + "..."
+        : regret.text;
+
+    // Mobile: native share sheet
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          text: `"${preview}"`,
+          url,
+        });
+        return;
+      } catch {
+        // User cancelled or share failed — fall through to copy
+      }
+    }
+
+    // Desktop fallback: copy link
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard API not available
+    }
+  };
+
   const delayClass =
     animationIndex !== undefined
       ? `animate-delay-${Math.min(animationIndex % 5, 4)}`
@@ -57,8 +88,8 @@ export default function RegretCard({
   return (
     <article
       className={`animate-fade-up ${delayClass} group relative bg-card/30 rounded-lg p-5 my-3`}
-      onMouseEnter={() => setShowFlag(true)}
-      onMouseLeave={() => setShowFlag(false)}
+      onMouseEnter={() => setShowActions(true)}
+      onMouseLeave={() => setShowActions(false)}
     >
       <blockquote className="m-0 p-0 border-0">
         <p className="text-base sm:text-lg leading-relaxed text-foreground/90 font-light">
@@ -83,18 +114,30 @@ export default function RegretCard({
           </>
         )}
 
-        <button
-          onClick={handleFlag}
-          className={`ml-auto transition-all duration-200 ${
-            flagged
-              ? "text-muted/30 line-through cursor-default"
-              : "text-muted/50 hover:text-muted cursor-pointer"
-          } ${showFlag || flagged ? "opacity-100" : "opacity-0"}`}
-          aria-label="Flag this regret"
-          disabled={flagged}
-        >
-          {flagged ? "flagged" : "flag"}
-        </button>
+        <div className={`ml-auto flex items-center gap-3 transition-opacity duration-200 ${
+          showActions ? "opacity-100" : "opacity-0"
+        }`}>
+          <button
+            onClick={handleShare}
+            className="text-muted/50 hover:text-muted cursor-pointer transition-colors"
+            aria-label="Share this regret"
+          >
+            {copied ? "copied" : "share"}
+          </button>
+
+          <button
+            onClick={handleFlag}
+            className={`transition-all duration-200 ${
+              flagged
+                ? "text-muted/30 line-through cursor-default"
+                : "text-muted/50 hover:text-muted cursor-pointer"
+            }`}
+            aria-label="Flag this regret"
+            disabled={flagged}
+          >
+            {flagged ? "flagged" : "flag"}
+          </button>
+        </div>
       </footer>
     </article>
   );
