@@ -16,6 +16,9 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://regretwall.com"
   ),
+  verification: {
+    other: { "msvalidate.01": "FD098C3E27246D36830F8DC5B7859BF0" },
+  },
   openGraph: {
     title: "Anonymous Regrets — What People Wish They Did Differently",
     description:

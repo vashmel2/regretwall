@@ -4,21 +4,13 @@ import { useState, useRef } from "react";
 import type { Regret } from "@/types/database";
 
 const TOPICS = [
-  { value: "", label: "Topic (optional)" },
+  { value: "", label: "Topic" },
   { value: "love", label: "Love" },
   { value: "career", label: "Career" },
   { value: "money", label: "Money" },
   { value: "family", label: "Family" },
   { value: "health", label: "Health" },
   { value: "fear", label: "Fear" },
-];
-
-const AGE_RANGES = [
-  { value: "", label: "Age (optional)" },
-  { value: "18-25", label: "18–25" },
-  { value: "26-35", label: "26–35" },
-  { value: "36-50", label: "36–50" },
-  { value: "50+", label: "50+" },
 ];
 
 export default function SubmitForm({
@@ -28,10 +20,11 @@ export default function SubmitForm({
 }) {
   const [text, setText] = useState("");
   const [topic, setTopic] = useState("");
-  const [ageRange, setAgeRange] = useState("");
+  const [recipientName, setRecipientName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [submittedName, setSubmittedName] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const charCount = text.trim().length;
@@ -51,7 +44,7 @@ export default function SubmitForm({
         body: JSON.stringify({
           text: text.trim(),
           topic: topic || undefined,
-          age_range: ageRange || undefined,
+          recipient_name: recipientName.trim() || undefined,
         }),
       });
 
@@ -62,11 +55,16 @@ export default function SubmitForm({
 
       const { regret } = await res.json();
       onSubmitted(regret);
+      const savedName = recipientName.trim() || null;
       setText("");
       setTopic("");
-      setAgeRange("");
+      setRecipientName("");
+      setSubmittedName(savedName);
       setSubmitted(true);
-      setTimeout(() => setSubmitted(false), 4000);
+      setTimeout(() => {
+        setSubmitted(false);
+        setSubmittedName(null);
+      }, 6000);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -86,14 +84,27 @@ export default function SubmitForm({
           id="regret-input"
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="I wish I had..."
+          placeholder="I wish I had told them how I felt..."
           rows={3}
           maxLength={500}
           className="w-full bg-transparent text-foreground placeholder:text-muted/40 text-base leading-relaxed resize-none focus:outline-none"
         />
 
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/50">
-          <div className="flex items-center gap-2 flex-wrap">
+        {/* "For" field — prominent, its own row */}
+        <div className="mt-3 pt-3 border-t border-border/50">
+          <input
+            type="text"
+            value={recipientName}
+            onChange={(e) => setRecipientName(e.target.value)}
+            placeholder="Is this regret for someone? Enter their first name"
+            maxLength={50}
+            className="w-full bg-transparent text-sm text-foreground border border-border/50 rounded-lg px-3 py-2.5 focus:outline-none focus:border-muted placeholder:text-muted/40 transition-colors"
+          />
+        </div>
+
+        {/* Bottom controls */}
+        <div className="flex items-center justify-between mt-3">
+          <div className="flex items-center gap-2">
             <select
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
@@ -102,18 +113,6 @@ export default function SubmitForm({
               {TOPICS.map((t) => (
                 <option key={t.value} value={t.value}>
                   {t.label}
-                </option>
-              ))}
-            </select>
-
-            <select
-              value={ageRange}
-              onChange={(e) => setAgeRange(e.target.value)}
-              className="bg-transparent text-xs text-muted border border-border/50 rounded px-2 py-1.5 focus:outline-none focus:border-muted cursor-pointer"
-            >
-              {AGE_RANGES.map((a) => (
-                <option key={a.value} value={a.value}>
-                  {a.label}
                 </option>
               ))}
             </select>
@@ -137,9 +136,17 @@ export default function SubmitForm({
         )}
 
         {submitted && (
-          <p className="text-sm text-accent mt-2 animate-fade-up">
-            Your regret has been added to the wall.
-          </p>
+          <div className="text-sm text-accent mt-2 animate-fade-up">
+            <p>Your regret has been added to the wall.</p>
+            {submittedName && (
+              <p className="mt-1 text-muted text-xs">
+                Share this link with them:{" "}
+                <span className="text-accent select-all">
+                  regretwall.com/regrets-for/{submittedName.toLowerCase()}
+                </span>
+              </p>
+            )}
+          </div>
         )}
       </div>
     </form>

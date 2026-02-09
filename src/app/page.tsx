@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import RegretFeed from "@/components/RegretFeed";
 
@@ -57,13 +58,22 @@ export default async function Home() {
           </p>
         </header>
 
-        {/* Anchor link to feed */}
-        <a
-          href="#recent-regrets"
-          className="text-sm text-muted hover:underline"
-        >
-          Read recent regrets
-        </a>
+        {/* Navigation links */}
+        <div className="flex items-center gap-4">
+          <a
+            href="#recent-regrets"
+            className="text-sm text-accent underline underline-offset-4 decoration-accent/30 hover:decoration-accent transition-colors"
+          >
+            Read recent regrets
+          </a>
+          <span className="text-border">·</span>
+          <Link
+            href="/regrets-for"
+            className="text-sm text-accent underline underline-offset-4 decoration-accent/30 hover:decoration-accent transition-colors"
+          >
+            Did someone leave a regret for you?
+          </Link>
+        </div>
 
         {/* Feed */}
         <RegretFeed

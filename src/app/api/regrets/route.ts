@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { text, topic, age_range, turnstileToken } = body;
+    const { text, topic, age_range, recipient_name, turnstileToken } = body;
 
     // Validate text
     if (!text || typeof text !== "string") {
@@ -103,6 +103,19 @@ export async function POST(request: NextRequest) {
 
     if (age_range && !VALID_AGE_RANGES.includes(age_range)) {
       return NextResponse.json({ error: "Invalid age range" }, { status: 400 });
+    }
+
+    // Validate recipient_name (optional, letters/spaces/hyphens only, max 50 chars)
+    let cleanRecipientName: string | null = null;
+    if (recipient_name && typeof recipient_name === "string") {
+      const trimmedName = recipient_name.trim();
+      if (trimmedName.length > 50) {
+        return NextResponse.json({ error: "Name must be 50 characters or less" }, { status: 400 });
+      }
+      if (!/^[a-zA-Z\s\-']+$/.test(trimmedName)) {
+        return NextResponse.json({ error: "Name can only contain letters, spaces, and hyphens" }, { status: 400 });
+      }
+      cleanRecipientName = trimmedName.toLowerCase();
     }
 
     // Verify Turnstile token if configured
@@ -148,8 +161,9 @@ export async function POST(request: NextRequest) {
         text: trimmed,
         topic: topic || null,
         age_range: age_range || null,
+        recipient_name: cleanRecipientName,
       })
-      .select("id, text, topic, age_range, created_at")
+      .select("id, text, topic, age_range, created_at, recipient_name")
       .single();
 
     if (error) {

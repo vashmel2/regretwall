@@ -3,12 +3,13 @@ export type RegretRow = {
   text: string;
   topic: string | null;
   age_range: string | null;
+  recipient_name: string | null;
   created_at: string;
   is_hidden: boolean;
   flag_count: number;
 };
 
-// Public-facing type (what the feed displays)
+// Public-facing type (what the main feed displays — no recipient_name)
 export type Regret = {
   id: string;
   text: string;
@@ -17,10 +18,16 @@ export type Regret = {
   created_at: string;
 };
 
+// Type for /regrets-for/[name] pages (includes recipient_name)
+export type RegretForRecipient = Regret & {
+  recipient_name: string;
+};
+
 export type RegretInsert = {
   text: string;
   topic?: string | null;
   age_range?: string | null;
+  recipient_name?: string | null;
 };
 
 export type Database = {

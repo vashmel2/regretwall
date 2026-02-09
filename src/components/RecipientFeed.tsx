@@ -1,23 +1,22 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import type { Regret } from "@/types/database";
 import RegretCard from "./RegretCard";
-import SubmitForm from "./SubmitForm";
 
 type FetchResult = {
   regrets: Regret[];
   nextCursor: string | null;
 };
 
-export default function RegretFeed({
+export default function RecipientFeed({
+  name,
   initialRegrets,
   initialCursor,
-  dbAvailable = true,
 }: {
+  name: string;
   initialRegrets: Regret[];
   initialCursor: string | null;
-  dbAvailable?: boolean;
 }) {
   const [regrets, setRegrets] = useState<Regret[]>(initialRegrets);
   const [cursor, setCursor] = useState<string | null>(initialCursor);
@@ -33,7 +32,9 @@ export default function RegretFeed({
     setLoadError(false);
 
     try {
-      const res = await fetch(`/api/regrets?cursor=${encodeURIComponent(cursor)}`);
+      const res = await fetch(
+        `/api/regrets/regrets-for/${encodeURIComponent(name)}?cursor=${encodeURIComponent(cursor)}`
+      );
       if (!res.ok) throw new Error("Failed to fetch");
       const data: FetchResult = await res.json();
 
@@ -45,9 +46,8 @@ export default function RegretFeed({
       setIsLoading(false);
       loadingRef.current = false;
     }
-  }, [cursor]);
+  }, [cursor, name]);
 
-  // Intersection Observer for infinite scroll
   useEffect(() => {
     const el = observerRef.current;
     if (!el) return;
@@ -65,33 +65,22 @@ export default function RegretFeed({
     return () => observer.disconnect();
   }, [loadMore]);
 
-  const handleNewRegret = (regret: Regret) => {
-    setRegrets((prev) => [regret, ...prev]);
-  };
-
   return (
-    <div>
-      {/* Submission form — always visible */}
-      <SubmitForm onSubmitted={handleNewRegret} />
-
-      {/* The feed */}
-      <section id="recent-regrets" aria-label="Recent anonymous regrets">
+    <div className="mt-8">
+      <section aria-label={`Anonymous regrets for ${name}`}>
         {regrets.map((regret, i) => (
           <RegretCard key={regret.id} regret={regret} animationIndex={i} />
         ))}
       </section>
 
-      {/* Infinite scroll trigger */}
       <div ref={observerRef} className="h-1" />
 
-      {/* Loading indicator */}
       {isLoading && (
         <div className="py-8 text-center">
           <span className="text-sm text-muted animate-pulse">· · ·</span>
         </div>
       )}
 
-      {/* Load error with retry */}
       {loadError && !isLoading && (
         <div className="py-8 text-center">
           <p className="text-sm text-muted/60 mb-2">
@@ -106,21 +95,9 @@ export default function RegretFeed({
         </div>
       )}
 
-      {/* End of feed */}
       {!cursor && !loadError && regrets.length > 0 && (
         <div className="py-12 text-center">
-          <p className="text-sm text-muted/50">You&apos;ve reached the end.</p>
-        </div>
-      )}
-
-      {/* Empty state */}
-      {regrets.length === 0 && !isLoading && (
-        <div className="py-20 text-center">
-          <p className="text-muted">
-            {dbAvailable
-              ? "No regrets yet. Be the first."
-              : "Unable to load regrets right now. Check back soon."}
-          </p>
+          <p className="text-sm text-muted/50">You&apos;ve seen them all.</p>
         </div>
       )}
     </div>
