@@ -92,7 +92,7 @@ export default function RegretCard({
       onMouseLeave={() => setShowActions(false)}
     >
       <blockquote className="m-0 p-0 border-0">
-        <p className="text-base sm:text-lg leading-relaxed text-foreground/90 font-light">
+        <p className="text-base sm:text-lg leading-relaxed text-foreground font-light">
           {regret.text}
         </p>
       </blockquote>

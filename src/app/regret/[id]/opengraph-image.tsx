@@ -64,7 +64,7 @@ export default async function OGImage({
         >
           <p
             style={{
-              color: "#e0ddd8",
+              color: "#e8e5e0",
               fontSize: `${fontSize}px`,
               fontWeight: 300,
               lineHeight: 1.6,
