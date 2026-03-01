@@ -97,7 +97,7 @@ export default function SubmitForm({
             type="text"
             value={recipientName}
             onChange={(e) => setRecipientName(e.target.value)}
-            placeholder="Is this regret for someone? Enter their first name"
+            placeholder="For someone? Your crush, your ex, a friend..."
             maxLength={50}
             className="w-full bg-transparent text-sm text-foreground border border-border/50 rounded-lg px-3 py-2.5 focus:outline-none focus:border-muted placeholder:text-muted/40 transition-colors"
           />

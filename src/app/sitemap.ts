@@ -1,10 +1,11 @@
 import type { MetadataRoute } from "next";
+import { supabase } from "@/lib/supabase";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://regretwall.com";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  return [
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: BASE_URL,
       lastModified: new Date(),
@@ -24,4 +25,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
   ];
+
+  if (!supabase) return staticRoutes;
+
+  const { data } = await supabase
+    .from("regrets")
+    .select("slug, id, created_at")
+    .eq("is_hidden", false)
+    .not("slug", "is", null)
+    .order("created_at", { ascending: false })
+    .limit(1000);
+
+  const regretRoutes: MetadataRoute.Sitemap = (data ?? []).map((r) => ({
+    url: `${BASE_URL}/regret/${r.slug ?? r.id}`,
+    lastModified: new Date(r.created_at),
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
+  }));
+
+  return [...staticRoutes, ...regretRoutes];
 }

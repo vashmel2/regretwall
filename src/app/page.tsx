@@ -8,6 +8,8 @@ const PROMPTS = [
   "What's a door you wish you hadn't closed?",
   "What's the one thing you'd do differently?",
   "What keeps you up at night?",
+  "Is there someone you never told how you felt?",
+  "What did you never say, but wish you had?",
 ];
 
 function getDailyPrompt(): string {

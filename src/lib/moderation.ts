@@ -16,6 +16,18 @@ const BLOCKED_WORDS = [
   "tranny",
 ];
 
+// Harassment and targeted abuse patterns
+const HARASSMENT_PATTERNS = [
+  /\bkill yourself\b/i,
+  /\bkys\b/i,
+  /\byou deserve to (die|suffer|rot)\b/i,
+  /\bi (hate|despise) you\b/i,
+  /\bi hope you (die|suffer|rot|get)\b/i,
+  /\byou will (regret|pay for)\b/i,
+  /\bi know where (you|u) (live|are|work)\b/i,
+  /\bgo (kill|hang|shoot) yourself\b/i,
+];
+
 // Patterns that indicate spam or abuse
 const SPAM_PATTERNS = [
   /https?:\/\//i,
@@ -52,6 +64,13 @@ function isExcessiveCaps(text: string): boolean {
 
 export function moderateContent(text: string): string | null {
   const lower = text.toLowerCase();
+
+  // Check harassment patterns
+  for (const pattern of HARASSMENT_PATTERNS) {
+    if (pattern.test(text)) {
+      return "Your submission contains language that isn't allowed.";
+    }
+  }
 
   // Check blocked words (as whole words)
   for (const word of BLOCKED_WORDS) {
