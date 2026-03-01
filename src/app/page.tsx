@@ -27,7 +27,7 @@ export default async function Home() {
     if (!supabase) return [];
     const { data } = await supabase
       .from("regrets")
-      .select("id, text, topic, age_range, created_at")
+      .select("id, text, topic, age_range, created_at, resonance_count, reply_count")
       .eq("is_hidden", false)
       .order("created_at", { ascending: false })
       .limit(20);

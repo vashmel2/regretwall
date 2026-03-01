@@ -43,6 +43,8 @@ export default async function RegretsForNamePage({ params }: Props) {
     age_range: string | null;
     created_at: string;
     recipient_name: string | null;
+    resonance_count: number;
+    reply_count: number;
   }[] = [];
   let totalCount = 0;
 
@@ -50,7 +52,7 @@ export default async function RegretsForNamePage({ params }: Props) {
     const [{ data }, { count }] = await Promise.all([
       supabase
         .from("regrets")
-        .select("id, text, topic, age_range, created_at, recipient_name")
+        .select("id, text, topic, age_range, created_at, recipient_name, resonance_count, reply_count")
         .eq("is_hidden", false)
         .ilike("recipient_name", decodedName)
         .order("created_at", { ascending: false })

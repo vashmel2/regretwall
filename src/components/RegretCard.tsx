@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import type { Regret } from "@/types/database";
 
 function timeAgo(dateStr: string): string {
@@ -32,45 +33,49 @@ const topicLabels: Record<string, string> = {
 export default function RegretCard({
   regret,
   animationIndex,
+  linkable = true,
 }: {
   regret: Regret;
   animationIndex?: number;
+  linkable?: boolean;
 }) {
+  const router = useRouter();
   const [flagged, setFlagged] = useState(false);
   const [showActions, setShowActions] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const handleFlag = async () => {
+  const handleCardClick = () => {
+    if (linkable) router.push(`/regret/${regret.id}`);
+  };
+
+  const handleFlag = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (flagged) return;
     setFlagged(true);
     try {
       await fetch(`/api/regrets/${regret.id}/flag`, { method: "POST" });
     } catch {
-      // Silent fail — don't disrupt UX
+      // Silent fail
     }
   };
 
-  const handleShare = async () => {
+  const handleShare = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     const url = `${window.location.origin}/regret/${regret.id}`;
     const preview =
       regret.text.length > 100
         ? regret.text.slice(0, 100) + "..."
         : regret.text;
 
-    // Mobile: native share sheet
     if (navigator.share) {
       try {
-        await navigator.share({
-          text: `"${preview}"`,
-          url,
-        });
+        await navigator.share({ text: `"${preview}"`, url });
         return;
       } catch {
         // User cancelled or share failed — fall through to copy
       }
     }
 
-    // Desktop fallback: copy link
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
@@ -87,7 +92,10 @@ export default function RegretCard({
 
   return (
     <article
-      className={`animate-fade-up ${delayClass} group relative bg-card/30 rounded-lg p-5 my-3`}
+      className={`animate-fade-up ${delayClass} group relative bg-card/30 rounded-lg p-5 my-3 ${
+        linkable ? "cursor-pointer hover:bg-card/50 transition-colors" : ""
+      }`}
+      onClick={handleCardClick}
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
     >
@@ -107,16 +115,28 @@ export default function RegretCard({
             <span>{topicLabels[regret.topic] ?? regret.topic}</span>
           </>
         )}
-        {regret.age_range && (
+
+        {/* Engagement counts — only shown when non-zero */}
+        {(regret.resonance_count > 0 || regret.reply_count > 0) && (
           <>
             <span className="text-border">·</span>
-            <span>{regret.age_range}</span>
+            {regret.resonance_count > 0 && (
+              <span>{regret.resonance_count} felt this</span>
+            )}
+            {regret.resonance_count > 0 && regret.reply_count > 0 && (
+              <span className="text-border">·</span>
+            )}
+            {regret.reply_count > 0 && (
+              <span>{regret.reply_count} {regret.reply_count === 1 ? "reply" : "replies"}</span>
+            )}
           </>
         )}
 
-        <div className={`ml-auto flex items-center gap-3 transition-opacity duration-200 ${
-          showActions ? "opacity-100" : "opacity-0"
-        }`}>
+        <div
+          className={`ml-auto flex items-center gap-3 transition-opacity duration-200 ${
+            showActions ? "opacity-100" : "opacity-0"
+          }`}
+        >
           <button
             onClick={handleShare}
             className="text-muted/50 hover:text-muted cursor-pointer transition-colors"

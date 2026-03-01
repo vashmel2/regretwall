@@ -3,6 +3,8 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { notFound } from "next/navigation";
 import RegretCard from "@/components/RegretCard";
+import ReplySection from "@/components/ReplySection";
+import type { RegretReply } from "@/types/database";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -12,11 +14,30 @@ async function getRegret(id: string) {
   if (!supabase) return null;
   const { data } = await supabase
     .from("regrets")
-    .select("id, text, topic, age_range, created_at")
+    .select("id, text, topic, age_range, created_at, resonance_count, reply_count")
     .eq("id", id)
     .eq("is_hidden", false)
     .single();
   return data;
+}
+
+async function getInitialReplies(
+  regretId: string
+): Promise<{ replies: RegretReply[]; nextCursor: string | null }> {
+  if (!supabase) return { replies: [], nextCursor: null };
+  const { data } = await supabase
+    .from("regret_replies")
+    .select("id, regret_id, text, created_at")
+    .eq("regret_id", regretId)
+    .eq("is_hidden", false)
+    .order("created_at", { ascending: true })
+    .limit(20);
+
+  const replies = (data ?? []) as RegretReply[];
+  const nextCursor =
+    replies.length === 20 ? replies[replies.length - 1].created_at : null;
+
+  return { replies, nextCursor };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -37,23 +58,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: `An anonymous regret shared on RegretWall: "${preview}"`,
     openGraph: {
       title: `"${preview}"`,
-      description:
-        "An anonymous regret shared by a real person on RegretWall.",
+      description: "An anonymous regret shared by a real person on RegretWall.",
       type: "article",
       siteName: "RegretWall",
     },
     twitter: {
       card: "summary_large_image",
       title: `"${preview}"`,
-      description:
-        "An anonymous regret shared by a real person on RegretWall.",
+      description: "An anonymous regret shared by a real person on RegretWall.",
     },
   };
 }
 
 export default async function RegretPage({ params }: Props) {
   const { id } = await params;
-  const regret = await getRegret(id);
+  const [regret, { replies, nextCursor }] = await Promise.all([
+    getRegret(id),
+    getInitialReplies(id),
+  ]);
 
   if (!regret) {
     notFound();
@@ -71,18 +93,20 @@ export default async function RegretPage({ params }: Props) {
           </Link>
         </header>
 
-        <RegretCard regret={regret} />
+        <RegretCard regret={regret} linkable={false} />
+
+        <ReplySection
+          regretId={regret.id}
+          initialReplies={replies}
+          initialNextCursor={nextCursor}
+          initialResonanceCount={regret.resonance_count}
+        />
 
         <div className="mt-12 text-center space-y-3">
-          <Link
-            href="/"
-            className="block text-sm text-accent hover:underline"
-          >
+          <Link href="/" className="block text-sm text-accent hover:underline">
             Read more anonymous regrets
           </Link>
-          <p className="text-xs text-muted/40">
-            or share yours, anonymously
-          </p>
+          <p className="text-xs text-muted/40">or share yours, anonymously</p>
         </div>
 
         <footer className="py-12 text-center">
