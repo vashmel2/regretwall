@@ -30,6 +30,7 @@ export type RegretForRecipient = Regret & {
 };
 
 export type RegretInsert = {
+  id?: string;
   text: string;
   topic?: string | null;
   age_range?: string | null;
