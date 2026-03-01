@@ -45,7 +45,7 @@ export default function RegretCard({
   const [copied, setCopied] = useState(false);
 
   const handleCardClick = () => {
-    if (linkable) router.push(`/regret/${regret.id}`);
+    if (linkable) router.push(`/regret/${regret.slug ?? regret.id}`);
   };
 
   const handleFlag = async (e: React.MouseEvent) => {
