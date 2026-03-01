@@ -52,15 +52,23 @@ export default async function Home() {
       .not("recipient_name", "is", null)
       .eq("is_hidden", false)
       .order("created_at", { ascending: false })
-      .limit(40);
+      .limit(60);
     if (!data) return [];
-    // Deduplicate and take first 7 unique names
+    // Relationship words that look odd as name chips on the homepage
+    const GENERIC_TERMS = new Set([
+      "mom", "dad", "mama", "papa", "mommy", "daddy",
+      "sis", "bro", "sister", "brother",
+      "ate", "kuya", "lola", "lolo", "tita", "tito",
+      "nanay", "tatay", "inay", "itay", "inang", "amang",
+    ]);
+    // Deduplicate, skip generic relationship words, take first 7 unique names
     const seen = new Set<string>();
     const names: string[] = [];
     for (const row of data) {
-      if (row.recipient_name && !seen.has(row.recipient_name)) {
-        seen.add(row.recipient_name);
-        names.push(row.recipient_name);
+      const name = row.recipient_name;
+      if (name && !seen.has(name) && !GENERIC_TERMS.has(name.toLowerCase())) {
+        seen.add(name);
+        names.push(name);
         if (names.length === 7) break;
       }
     }
