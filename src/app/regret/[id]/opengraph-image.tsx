@@ -17,16 +17,27 @@ export default async function OGImage({
   let topic: string | null = null;
 
   if (supabase) {
-    const { data } = await supabase
+    // Try slug first, fall back to UUID
+    const { data: bySlug } = await supabase
       .from("regrets")
       .select("text, topic")
-      .eq("id", id)
+      .eq("slug", id)
       .eq("is_hidden", false)
-      .single();
+      .maybeSingle();
 
-    if (data) {
-      text = data.text;
-      topic = data.topic;
+    const resolved = bySlug ?? await (async () => {
+      const { data } = await supabase!
+        .from("regrets")
+        .select("text, topic")
+        .eq("id", id)
+        .eq("is_hidden", false)
+        .maybeSingle();
+      return data;
+    })();
+
+    if (resolved) {
+      text = resolved.text;
+      topic = resolved.topic;
     }
   }
 

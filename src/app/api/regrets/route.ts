@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
 
   let query = supabase
     .from("regrets")
-    .select("id, text, topic, age_range, created_at, resonance_count, reply_count")
+    .select("id, text, topic, age_range, created_at, resonance_count, reply_count, slug")
     .eq("is_hidden", false)
     .order("created_at", { ascending: false })
     .limit(PAGE_SIZE);
@@ -155,7 +155,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Database not configured" }, { status: 503 });
     }
 
-    const { data, error } = await supabase
+    const { data: inserted, error: insertError } = await supabase
       .from("regrets")
       .insert({
         text: trimmed,
@@ -163,7 +163,34 @@ export async function POST(request: NextRequest) {
         age_range: age_range || null,
         recipient_name: cleanRecipientName,
       })
-      .select("id, text, topic, age_range, created_at, recipient_name")
+      .select("id")
+      .single();
+
+    if (insertError || !inserted) {
+      console.error("Supabase insert error:", insertError);
+      return NextResponse.json(
+        { error: "Failed to save regret" },
+        { status: 500 }
+      );
+    }
+
+    // Generate SEO-friendly slug from text + short UUID suffix
+    const slugBase = trimmed
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, "")
+      .trim()
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .slice(0, 55)
+      .replace(/-$/, "");
+    const shortId = inserted.id.replace(/-/g, "").slice(0, 8);
+    const slug = slugBase ? `${slugBase}-${shortId}` : shortId;
+
+    const { data, error } = await supabase
+      .from("regrets")
+      .update({ slug })
+      .eq("id", inserted.id)
+      .select("id, text, topic, age_range, created_at, recipient_name, slug")
       .single();
 
     if (error) {

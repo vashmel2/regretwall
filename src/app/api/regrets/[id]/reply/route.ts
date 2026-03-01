@@ -76,9 +76,6 @@ export async function POST(
       return NextResponse.json({ error: "Failed to save reply" }, { status: 500 });
     }
 
-    // Atomically increment reply_count on the parent regret
-    await supabase.rpc("increment_reply_count", { p_regret_id: id });
-
     return NextResponse.json({ reply }, { status: 201 });
   } catch {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });

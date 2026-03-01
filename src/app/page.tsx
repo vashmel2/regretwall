@@ -27,7 +27,7 @@ export default async function Home() {
     if (!supabase) return [];
     const { data } = await supabase
       .from("regrets")
-      .select("id, text, topic, age_range, created_at, resonance_count, reply_count")
+      .select("id, text, topic, age_range, created_at, resonance_count, reply_count, slug")
       .eq("is_hidden", false)
       .order("created_at", { ascending: false })
       .limit(20);
@@ -71,7 +71,7 @@ export default async function Home() {
             href="/regrets-for"
             className="text-sm text-accent underline underline-offset-4 decoration-accent/30 hover:decoration-accent transition-colors"
           >
-            Did someone leave a regret for you?
+            Check if someone left a regret for you
           </Link>
         </div>
 

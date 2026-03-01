@@ -61,7 +61,7 @@ export default function RegretCard({
 
   const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    const url = `${window.location.origin}/regret/${regret.id}`;
+    const url = `${window.location.origin}/regret/${regret.slug ?? regret.id}`;
     const preview =
       regret.text.length > 100
         ? regret.text.slice(0, 100) + "..."
@@ -133,7 +133,7 @@ export default function RegretCard({
         )}
 
         <div
-          className={`ml-auto flex items-center gap-3 transition-opacity duration-200 ${
+          className={`ml-auto flex items-center gap-3 transition-opacity duration-200 [@media(hover:none)]:opacity-100 ${
             showActions ? "opacity-100" : "opacity-0"
           }`}
         >

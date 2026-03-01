@@ -10,15 +10,26 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
-async function getRegret(id: string) {
+async function getRegret(slugOrId: string) {
   if (!supabase) return null;
-  const { data } = await supabase
+
+  // Try slug first (new SEO-friendly URLs)
+  const { data: bySlug } = await supabase
     .from("regrets")
-    .select("id, text, topic, age_range, created_at, resonance_count, reply_count")
-    .eq("id", id)
+    .select("id, text, topic, age_range, created_at, resonance_count, reply_count, slug")
+    .eq("slug", slugOrId)
     .eq("is_hidden", false)
-    .single();
-  return data;
+    .maybeSingle();
+  if (bySlug) return bySlug;
+
+  // Fallback: UUID (old share links remain valid)
+  const { data: byId } = await supabase
+    .from("regrets")
+    .select("id, text, topic, age_range, created_at, resonance_count, reply_count, slug")
+    .eq("id", slugOrId)
+    .eq("is_hidden", false)
+    .maybeSingle();
+  return byId ?? null;
 }
 
 async function getInitialReplies(

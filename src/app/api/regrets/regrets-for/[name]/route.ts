@@ -39,7 +39,7 @@ export async function GET(
 
   let query = supabase
     .from("regrets")
-    .select("id, text, topic, age_range, created_at, recipient_name, resonance_count, reply_count")
+    .select("id, text, topic, age_range, created_at, recipient_name, resonance_count, reply_count, slug")
     .eq("is_hidden", false)
     .ilike("recipient_name", decodedName)
     .order("created_at", { ascending: false })

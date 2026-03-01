@@ -9,6 +9,7 @@ export type RegretRow = {
   flag_count: number;
   resonance_count: number;
   reply_count: number;
+  slug: string | null;
 };
 
 // Public-facing type (what the main feed displays)
@@ -20,6 +21,7 @@ export type Regret = {
   created_at: string;
   resonance_count: number;
   reply_count: number;
+  slug: string | null;
 };
 
 // Type for /regrets-for/[name] pages (includes recipient_name)
@@ -32,6 +34,7 @@ export type RegretInsert = {
   topic?: string | null;
   age_range?: string | null;
   recipient_name?: string | null;
+  slug?: string | null;
 };
 
 export type RegretReply = {
