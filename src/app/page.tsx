@@ -18,10 +18,18 @@ function getDailyPrompt(): string {
   return PROMPTS[dayOfYear % PROMPTS.length];
 }
 
-export const revalidate = 60; // ISR: revalidate every 60 seconds
+function capitalize(name: string): string {
+  return name
+    .split(" ")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+}
+
+export const revalidate = 60;
 
 export default async function Home() {
   let initialRegrets: Awaited<ReturnType<typeof fetchRegrets>> = [];
+  let recentNames: string[] = [];
 
   async function fetchRegrets() {
     if (!supabase) return [];
@@ -34,7 +42,34 @@ export default async function Home() {
     return data ?? [];
   }
 
-  initialRegrets = await fetchRegrets();
+  async function fetchRecentNames(): Promise<string[]> {
+    if (!supabase) return [];
+    const { data } = await supabase
+      .from("regrets")
+      .select("recipient_name")
+      .not("recipient_name", "is", null)
+      .eq("is_hidden", false)
+      .order("created_at", { ascending: false })
+      .limit(40);
+    if (!data) return [];
+    // Deduplicate and take first 7 unique names
+    const seen = new Set<string>();
+    const names: string[] = [];
+    for (const row of data) {
+      if (row.recipient_name && !seen.has(row.recipient_name)) {
+        seen.add(row.recipient_name);
+        names.push(row.recipient_name);
+        if (names.length === 7) break;
+      }
+    }
+    return names;
+  }
+
+  [initialRegrets, recentNames] = await Promise.all([
+    fetchRegrets(),
+    fetchRecentNames(),
+  ]);
+
   const initialCursor =
     initialRegrets.length === 20
       ? initialRegrets[initialRegrets.length - 1].created_at
@@ -58,20 +93,29 @@ export default async function Home() {
           </p>
         </header>
 
-        {/* Navigation links */}
-        <div className="flex items-center gap-4">
-          <a
-            href="#recent-regrets"
-            className="text-sm text-accent underline underline-offset-4 decoration-accent/30 hover:decoration-accent transition-colors"
-          >
-            Read recent regrets
-          </a>
-          <span className="text-border">·</span>
+        {/* /regrets-for callout — the viral mechanic */}
+        <div className="mb-8 p-4 rounded-lg border border-border/50 bg-card/20">
+          <p className="text-sm text-foreground/80 mb-3">
+            Someone may have left an anonymous regret for you.
+          </p>
+          {recentNames.length > 0 && (
+            <div className="flex flex-wrap gap-x-3 gap-y-1 mb-3">
+              {recentNames.map((name) => (
+                <Link
+                  key={name}
+                  href={`/regrets-for/${encodeURIComponent(name)}`}
+                  className="text-sm text-accent/70 hover:text-accent transition-colors"
+                >
+                  {capitalize(name)}
+                </Link>
+              ))}
+            </div>
+          )}
           <Link
             href="/regrets-for"
             className="text-sm text-accent underline underline-offset-4 decoration-accent/30 hover:decoration-accent transition-colors"
           >
-            Check if someone left a regret for you
+            Check if someone left a regret for you →
           </Link>
         </div>
 
@@ -82,7 +126,7 @@ export default async function Home() {
           dbAvailable={!!supabase}
         />
 
-        {/* SEO context — informational, non-intrusive */}
+        {/* SEO context */}
         <section className="py-10 border-t border-border/30">
           <h2 className="text-xs tracking-widest uppercase text-muted/40 mb-3">
             Real thoughts about life, love, and missed chances

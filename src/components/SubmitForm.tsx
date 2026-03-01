@@ -25,6 +25,7 @@ export default function SubmitForm({
   const [error, setError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [submittedName, setSubmittedName] = useState<string | null>(null);
+  const [linkCopied, setLinkCopied] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const charCount = text.trim().length;
@@ -136,15 +137,38 @@ export default function SubmitForm({
         )}
 
         {submitted && (
-          <div className="text-sm text-accent mt-2 animate-fade-up">
-            <p>Your regret has been added to the wall.</p>
+          <div className="mt-3 animate-fade-up space-y-2">
+            <p className="text-sm text-accent">
+              Your regret has been added to the wall.
+            </p>
             {submittedName && (
-              <p className="mt-1 text-muted text-xs">
-                Share this link with them:{" "}
-                <span className="text-accent select-all">
-                  regretwall.com/regrets-for/{submittedName.toLowerCase()}
-                </span>
-              </p>
+              <div className="border border-border/50 rounded-lg p-3 space-y-2">
+                <p className="text-xs text-muted">
+                  Send this to{" "}
+                  <span className="text-foreground capitalize">{submittedName}</span>
+                  {" "}so they can find it:
+                </p>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs text-accent/80 truncate select-all">
+                    regretwall.com/regrets-for/{submittedName.toLowerCase()}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        await navigator.clipboard.writeText(
+                          `https://regretwall.com/regrets-for/${submittedName.toLowerCase()}`
+                        );
+                        setLinkCopied(true);
+                        setTimeout(() => setLinkCopied(false), 2000);
+                      } catch { /* silent */ }
+                    }}
+                    className="text-xs text-muted hover:text-foreground transition-colors cursor-pointer shrink-0"
+                  >
+                    {linkCopied ? "copied!" : "copy link"}
+                  </button>
+                </div>
+              </div>
             )}
           </div>
         )}

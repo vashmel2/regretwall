@@ -14,6 +14,26 @@ export async function GET(request: NextRequest) {
   }
 
   const { searchParams } = new URL(request.url);
+  const sort = searchParams.get("sort");
+
+  // "Most felt" view — top 50 by resonance, no pagination needed at this scale
+  if (sort === "top") {
+    const { data, error } = await supabase
+      .from("regrets")
+      .select("id, text, topic, age_range, created_at, resonance_count, reply_count, slug")
+      .eq("is_hidden", false)
+      .order("resonance_count", { ascending: false })
+      .order("created_at", { ascending: false })
+      .limit(50);
+
+    if (error) {
+      return NextResponse.json({ error: "Failed to fetch regrets" }, { status: 500 });
+    }
+
+    return NextResponse.json({ regrets: data ?? [], nextCursor: null });
+  }
+
+  // Default: recent, cursor-based
   const cursor = searchParams.get("cursor");
 
   let query = supabase
@@ -38,10 +58,7 @@ export async function GET(request: NextRequest) {
       ? data[data.length - 1].created_at
       : null;
 
-  return NextResponse.json({
-    regrets: data ?? [],
-    nextCursor,
-  });
+  return NextResponse.json({ regrets: data ?? [], nextCursor });
 }
 
 export async function POST(request: NextRequest) {
