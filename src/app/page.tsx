@@ -150,10 +150,15 @@ export default async function Home() {
         </section>
 
         {/* Footer */}
-        <footer className="py-12 text-center">
+        <footer className="py-12 text-center space-y-3">
           <p className="text-xs text-muted/50">
             Anonymous. No accounts. No judgement.
           </p>
+          <div className="flex items-center justify-center gap-4 text-xs text-muted/40">
+            <Link href="/terms" className="hover:text-muted transition-colors">Terms</Link>
+            <span>·</span>
+            <Link href="/privacy" className="hover:text-muted transition-colors">Privacy</Link>
+          </div>
         </footer>
       </div>
     </main>
