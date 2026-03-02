@@ -41,7 +41,7 @@ export default function TermsPage() {
           <section className="space-y-3">
             <h2 className="text-sm tracking-widest uppercase text-muted/60">3. Eligibility</h2>
             <p className="text-sm leading-relaxed text-foreground/80">
-              You must be at least 13 years old to use this Service. By using RegretWall, you represent that you meet this requirement. If you are under 18, you should have parental permission before submitting content.
+              You must be at least 18 years old to use this Service. By using RegretWall, you represent that you meet this requirement. If you are under 18, do not use this Service.
             </p>
           </section>
 
@@ -140,7 +140,7 @@ export default function TermsPage() {
           <section className="space-y-3">
             <h2 className="text-sm tracking-widest uppercase text-muted/60">12. Governing Law</h2>
             <p className="text-sm leading-relaxed text-foreground/80">
-              These Terms are governed by and construed in accordance with the laws of the Republic of the Philippines, without regard to conflict of law principles. Any disputes arising from these Terms shall be subject to the exclusive jurisdiction of the courts of Cebu City, Philippines.
+              These Terms are governed by and construed in accordance with the laws of the Republic of the Philippines, without regard to conflict of law principles. Any disputes arising from these Terms shall be subject to the exclusive jurisdiction of the courts of the Philippines.
             </p>
           </section>
 
@@ -158,6 +158,7 @@ export default function TermsPage() {
               <a href="mailto:hello@regretwall.com" className="text-accent underline underline-offset-4 decoration-accent/30 hover:decoration-accent transition-colors">
                 hello@regretwall.com
               </a>
+              {" "}You may also use the flag button on any post to report content directly.
             </p>
           </section>
 

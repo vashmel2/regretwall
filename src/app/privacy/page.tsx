@@ -174,7 +174,7 @@ export default function PrivacyPage() {
           <section className="space-y-3">
             <h2 className="text-sm tracking-widest uppercase text-muted/60">8. Children's Privacy</h2>
             <p className="text-sm leading-relaxed text-foreground/80">
-              RegretWall is not directed at children under the age of 13. We do not knowingly collect any information from children under 13. If you believe a child under 13 has submitted content to our Service, please contact us and we will remove it promptly.
+              RegretWall is intended for users 18 years of age and older. We do not knowingly collect any information from minors. If you believe a minor has submitted content to our Service, please contact us and we will remove it promptly.
             </p>
           </section>
 
@@ -208,7 +208,7 @@ export default function PrivacyPage() {
               </a>
             </p>
             <p className="text-sm leading-relaxed text-foreground/80">
-              We are based in Cebu City, Philippines and operate under Philippine law.
+              We are based in the Philippines and operate under Philippine law.
             </p>
           </section>
 
