@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import type { Regret } from "@/types/database";
 
 function timeAgo(dateStr: string): string {
@@ -39,14 +39,9 @@ export default function RegretCard({
   animationIndex?: number;
   linkable?: boolean;
 }) {
-  const router = useRouter();
   const [flagged, setFlagged] = useState(false);
   const [showActions, setShowActions] = useState(false);
   const [copied, setCopied] = useState(false);
-
-  const handleCardClick = () => {
-    if (linkable) router.push(`/regret/${regret.slug ?? regret.id}`);
-  };
 
   const handleFlag = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -93,12 +88,19 @@ export default function RegretCard({
   return (
     <article
       className={`animate-fade-up ${delayClass} group relative bg-card/30 rounded-lg p-5 my-3 ${
-        linkable ? "cursor-pointer hover:bg-card/50 transition-colors" : ""
+        linkable ? "hover:bg-card/50 transition-colors" : ""
       }`}
-      onClick={handleCardClick}
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
     >
+      {/* Stretched link — real <a> tag covering the whole card for SEO + navigation */}
+      {linkable && (
+        <Link
+          href={`/regret/${regret.slug ?? regret.id}`}
+          className="absolute inset-0 rounded-lg"
+          aria-label="Read full regret"
+        />
+      )}
       <blockquote className="m-0 p-0 border-0">
         <p className="text-base sm:text-lg leading-relaxed text-foreground font-light">
           {regret.text}
@@ -139,7 +141,7 @@ export default function RegretCard({
         >
           <button
             onClick={handleShare}
-            className="text-muted/50 hover:text-muted cursor-pointer transition-colors"
+            className="relative z-10 text-muted/50 hover:text-muted cursor-pointer transition-colors"
             aria-label="Share this regret"
           >
             {copied ? "copied" : "share"}
@@ -147,7 +149,7 @@ export default function RegretCard({
 
           <button
             onClick={handleFlag}
-            className={`transition-all duration-200 ${
+            className={`relative z-10 transition-all duration-200 ${
               flagged
                 ? "text-muted/30 line-through cursor-default"
                 : "text-muted/50 hover:text-muted cursor-pointer"
