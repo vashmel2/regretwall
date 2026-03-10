@@ -159,6 +159,9 @@ export default async function Home() {
             <span>·</span>
             <Link href="/privacy" className="hover:text-muted transition-colors">Privacy</Link>
           </div>
+          <p className="text-xs text-muted/30">
+            &copy; {new Date().getFullYear()} RegretWall. All rights reserved.
+          </p>
         </footer>
       </div>
     </main>
